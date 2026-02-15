@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Entry
+from .models import Entry, User
 from .serializers import EntrySerializer, ProgressSerializer
 
 # EntryViewSet
@@ -22,6 +22,11 @@ class EntryViewSet(viewsets.ModelViewSet):
             date__year=year,
             date__month=month
         )
+    
+    def perform_create(self, serializer):
+        # Hardcode a user for now (get or create)
+        user, created = User.objects.get_or_create(username='testuser')
+        serializer.save(user=user)
 
 # ProgressView
 class ProgressViewSet(viewsets.ViewSet):
